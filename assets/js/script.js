@@ -1,56 +1,34 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-var currentDayEl = $('#currentDay');
-// TODO: Add code to display the current date in the header of the page.
-currentDayEl.text(dayjs().format('dddd, MMMM DD h:mma'));
-var past = $('.past');
-var present = $('.present');
-var future = $('.future');
-var currentHour = dayjs().format('h');
-console.log(currentHour);
+// Current day element that displays date and time at top of page.
+var currentDayEl = $("#currentDay");
+currentDayEl.text(dayjs().format("dddd, MMMM DD h:mma"));
 
+// Current hour
+var currentHour = dayjs().hour()
 
-$(document).ready(function(){
-  $('.saveBtn').on('click', function(){
-    var textAreaEl = $(this).siblings('.description').val();
-    console.log(textAreaEl);
-    var currentTime = $(this).parent().attr('id');
-    console.log(currentTime);
-    localStorage.setItem(currentTime, textAreaEl);
-  })
+// Add click listener to save button and sets the text area input into local storage.
+$(".saveBtn").on("click", function(){
+  var textAreaEl = $(this).siblings(".description").val();
+  var currentTime = $(this).parent().attr("id");
+  localStorage.setItem(currentTime, textAreaEl);
 });
 
-function hourTracker() {
-  $('.time-block').each(function() {
-    var currentHourCheck = parseInt($(this).attr('id').split('hour'));
-   if (currentHourCheck < currentHour) {
-    $(this).removeClass('present future').addClass('past');
-   } else if (currentHourCheck === currentHour) {
-    $(this).removeClass('past future').addClass('present');
-   } else 
-    $(this).removeClass('past present').addClass('future');
-  });
-  
+$(".time-block").each(function(){
+  // Checks hour of each time block
+  var currentHourCheck = $(this).attr("id").split("hour-")[1];
+  // Compares current hour to hour on time block, adds / removes classes, then displays correct color.
+  if (currentHourCheck < currentHour) {
+    $(this).removeClass('present future').addClass("past");
+  } else if (currentHourCheck == currentHour) {
+    $(this).removeClass('past future').addClass("present");
+  } else { 
+    $(this).removeClass('past present').addClass("future");
 }
-hourTracker();
+});
 
-
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-
+// Gets data from local storage to display in workday text area.
+function getFromLocal(){
+for (var i = 9; i <= 17; i++){
+  $('#hour-' + i + ' .description').val(localStorage.getItem('hour-' + i));
+}
+};
+getFromLocal();
